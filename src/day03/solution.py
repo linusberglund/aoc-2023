@@ -22,7 +22,7 @@ def get_number_positions(data, symbols):
 
     initial_number_locations = set()
 
-    for (x, y) in symbols.keys():
+    for x, y in symbols.keys():
         for y_pos in range(x - 1, x + 2):
             for x_pos in range(y - 1, y + 2):
                 if y_pos < 0 or y_pos > max_x or x_pos < 0 or x_pos > max_y:
