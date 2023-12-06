@@ -148,8 +148,7 @@ def part2(data):
             case "temperature_to_humidity":
                 humidity, humidity_rev = gen_map_part2(data, i, soil)
             case "humidity_to_location":
-                location, location_rev = gen_map_part2(data, i, soil)\
-
+                location, location_rev = gen_map_part2(data, i, soil)
     lowest_location = None
 
     all_final_locations = []
@@ -163,7 +162,6 @@ def part2(data):
             pass
 
     return lowest_location
-
 
 
 ################################################################################
