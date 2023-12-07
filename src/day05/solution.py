@@ -85,21 +85,6 @@ def part1(data):
 ################################################################################
 
 
-def gen_map_part2(data, i, mapping):
-    mapping_rev = {}
-
-    for x in data[i + 1 :]:
-        if not x:
-            break
-
-        dest, start, ran = [int(n) for n in x.split(" ")]
-
-        mapping[start] = (dest, ran)
-        mapping_rev[dest] = (start, ran)
-
-    return mapping, mapping_rev
-
-
 def part2(data):
     data = [line.replace("-", "_") for line in data]
 
@@ -107,61 +92,49 @@ def part2(data):
     seeds = seeds.replace("seeds: ", "").split(" ")
     seeds = [int(x) for x in seeds]
 
-    real_seeds = []
-
-    for i, x in enumerate(seeds):
-        if not i % 2:
-            real_seeds.append((x, seeds[i + 1]))
-
-    # pp(real_seeds)
-
-    soil = {}
-    fertilizer = {}
-    water = {}
-    light = {}
-    temperature = {}
-    humidity = {}
-    location = {}
-
-    soil_rev = {}
-    fertilizer_rev = {}
-    water_rev = {}
-    light_rev = {}
-    temperature_rev = {}
-    humidity_rev = {}
-    location_rev = {}
+    seed_to_soil = {}
+    soil_to_fertilizer = {}
+    fertilizer_to_water = {}
+    water_to_light = {}
+    light_to_temperature = {}
+    temperature_to_humidity = {}
+    humidity_to_location = {}
 
     for i, line in enumerate(data):
         line = line.replace(" map:", "")
 
         match line:
             case "seed_to_soil":
-                soil, soil_rev = gen_map_part2(data, i, soil)
+                gen_map(data, i, seed_to_soil)
             case "soil_to_fertilizer":
-                fertilizer, fertilizer_rev = gen_map_part2(data, i, soil)
+                gen_map(data, i, soil_to_fertilizer)
             case "fertilizer_to_water":
-                water, water_rev = gen_map_part2(data, i, soil)
+                gen_map(data, i, fertilizer_to_water)
             case "water_to_light":
-                light, light_rev = gen_map_part2(data, i, soil)
+                gen_map(data, i, water_to_light)
             case "light_to_temperature":
-                temperature, temperature_rev = gen_map_part2(data, i, soil)
+                gen_map(data, i, light_to_temperature)
             case "temperature_to_humidity":
-                humidity, humidity_rev = gen_map_part2(data, i, soil)
+                gen_map(data, i, temperature_to_humidity)
             case "humidity_to_location":
-                location, location_rev = gen_map_part2(data, i, soil)
-    lowest_location = None
+                gen_map(data, i, humidity_to_location)
 
-    all_final_locations = []
+    results = []
 
-    location_dests = sorted(location_rev.keys())
+    for seed in seeds:
+        current = seed
 
-    for dest in location_dests:
-        start, ran = location_rev[dest]
+        current = check_map(seed_to_soil, current)
+        current = check_map(soil_to_fertilizer, current)
+        current = check_map(fertilizer_to_water, current)
+        current = check_map(water_to_light, current)
+        current = check_map(light_to_temperature, current)
+        current = check_map(temperature_to_humidity, current)
+        current = check_map(humidity_to_location, current)
 
-        for i in range(dest, dest + ran + 1):
-            pass
+        results.append(current)
 
-    return lowest_location
+    return min(results)
 
 
 ################################################################################
