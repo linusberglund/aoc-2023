@@ -1,9 +1,6 @@
-import re
-import sys
 from copy import deepcopy
 from functools import cmp_to_key
 from pathlib import Path
-from pprint import pp
 
 ################################################################################
 
@@ -142,45 +139,51 @@ def eval_hand_2(hand):
             score.append(6)
 
         # Three of a kind = 4
-        if count == 3:
-            if counts["J"] >= 2:
+        if count == 3 and x != "J":
+            if counts["J"] == 2:
                 score.append(7)
 
-            if counts["J"] >= 1:
+            if counts["J"] == 1:
                 score.append(6)
 
             score.append(4)
 
             remaining = {k: v for k, v in counts.items() if k is not x}
             for _, subcount in remaining.items():
-                if subcount == 2 or counts["J"] >= 2:
+                if subcount == 2 or counts["J"] == 2:
                     # Full house = 5
                     score.append(5)
 
         # Two pair = 3
-        if count == 2:
+        if count == 2 and x != "J":
             score.append(2)
 
-            if counts["J"] >= 3:
+            if counts["J"] == 3:
                 score.append(7)
 
-            if counts["J"] >= 2:
+            if counts["J"] == 2:
                 score.append(6)
 
-            if counts["J"] >= 1:
+            if counts["J"] == 1:
                 score.append(4)
 
             remaining = {k: v for k, v in counts.items() if k is not x}
             for _, subcount in remaining.items():
                 if subcount == 2:
                     score.append(3)
-                    if counts["J"] >= 1:
+                    if counts["J"] == 1:
                         score.append(5)
 
         # One pair = 1
         score.append(1)
 
-        if counts["J"] >= 1:
+        if counts["J"] == 3:
+            score.append(6)
+
+        if counts["J"] == 2:
+            score.append(4)
+
+        if counts["J"] == 1:
             score.append(2)
 
     return max(score)
@@ -229,8 +232,6 @@ def compare_hands_2(hand_A, hand_B):
         if y > x:
             return 1
 
-    # print(hand1, hand2)
-    print("BAD")
     return 0
 
 
@@ -245,14 +246,10 @@ def part2(data):
 
     for hand, bid in hands:
         strength = eval_hand_2(hand)
-        # print(f"HAND: {hand} = {strength}")
         hands_strength.append((hand, bid, strength))
 
     hands_rank = deepcopy(hands_strength)
     hands_rank = sorted(hands_rank, key=cmp_to_key(compare_hands_2), reverse=True)
-
-    # pp(hands_strength)
-    # pp(hands_rank)
 
     result = 0
 
@@ -271,8 +268,7 @@ def parse(path):
 
 
 data = "src/day07/input.txt"
-# data = "src/day07/example.txt"
-# data = "src/day07/test.txt"
+data = "src/day07/example.txt"
 
 print(part1(parse(data)))
 print(part2(parse(data)))
